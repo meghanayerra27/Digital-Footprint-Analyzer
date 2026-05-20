@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>Analysis Dashboard</h1>
+    <p>Digital Footprint Overview</p>
+</header>
+
+<main class="container">
+
+    <!-- USER INFO CARD -->
+    <section class="card">
+
+        <h2 id="userName">Loading...</h2>
+
+        <p>Welcome to your analysis dashboard</p>
+
+    </section>
+
+    <!-- ANALYSIS CARD -->
+    <section class="card dashboard-box">
+
+        <h3>Digital Risk Analysis</h3>
+
+        <p>
+            Click below to generate your detailed footprint report.
+        </p>
+
+        <button onclick="generateReport()">
+            Generate Report
+        </button>
+
+    </section>
+
+</main>
+
+<footer>
+    <p>Dashboard System © 2026</p>
+</footer>
+
+<script src="js/main.js"></script>
+
+<script>
+
+    // Load username from index page
+    const username = localStorage.getItem("username") || "Guest";
+    document.getElementById("userName").innerText = "Welcome, " + username;
+
+    // Generate report data
+    function generateReport() {
+
+        const reportData = {
+            username: username,
+            risk_score: Math.floor(Math.random() * 100),
+
+            social_score: Math.floor(Math.random() * 100),
+            leak_score: Math.floor(Math.random() * 100),
+            search_score: Math.floor(Math.random() * 100),
+            security_score: Math.floor(Math.random() * 100),
+
+            risk_level: ""
+        };
+
+        // Risk logic
+        if (reportData.risk_score > 70) {
+            reportData.risk_level = "High Risk";
+        } else if (reportData.risk_score > 40) {
+            reportData.risk_level = "Medium Risk";
+        } else {
+            reportData.risk_level = "Low Risk";
+        }
+
+        // Save data
+        localStorage.setItem("reportData", JSON.stringify(reportData));
+
+        // Go to report page
+        window.location.href = "report.html";
+    }
+
+</script>
+
+</body>
+
+</html>

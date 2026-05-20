@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk Report</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- ✅ STEP 1: ADD CHART LIBRARY HERE -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<header>
+    <h1>Digital Footprint Report</h1>
+    <p>Detailed Risk Analysis</p>
+</header>
+
+<!-- MAIN CONTAINER -->
+<main class="container">
+
+    <!-- USER INFO -->
+    <section class="card">
+        <h2 id="reportUser">Loading...</h2>
+        <p>Digital footprint analysis summary</p>
+    </section>
+
+    <!-- RISK SCORE -->
+    <section class="card">
+        <h3>Risk Score</h3>
+
+        <p><strong>Score:</strong> <span id="riskScore">--</span></p>
+        <p><strong>Level:</strong> <span id="riskLevel">--</span></p>
+    </section>
+
+    <!-- EXPOSURE DETAILS -->
+    <section class="card">
+        <h3>Exposure Details</h3>
+        <ul id="exposureList">
+            <li>Loading...</li>
+        </ul>
+    </section>
+
+    <!-- ✅ STEP 2: RISK CHART -->
+    <section class="card">
+        <h3>Risk Overview</h3>
+        <canvas id="riskChart"></canvas>
+    </section>
+
+    <!-- ✅ STEP 3: EXPOSURE CHART -->
+    <section class="card">
+        <h3>Exposure Breakdown</h3>
+        <canvas id="exposureChart"></canvas>
+    </section>
+
+    <!-- BACK BUTTON -->
+    <section class="card">
+        <button onclick="goDashboard()">
+            Back to Dashboard
+        </button>
+    </section>
+
+</main>
+
+<footer>
+    <p>Report System © 2026</p>
+</footer>
+
+<!-- SCRIPT -->
+<script>
+
+let data = null;
+
+// safe parsing
+try {
+    const raw = localStorage.getItem("reportData");
+    data = raw ? JSON.parse(raw) : null;
+} catch (e) {
+    console.error(e);
+}
+
+if (data) {
+
+    document.getElementById("reportUser").innerText =
+        data.username || "Unknown User";
+
+    document.getElementById("riskScore").innerText =
+        data.risk_score ?? 0;
+
+    document.getElementById("riskLevel").innerText =
+        data.risk_level || "Unknown";
+
+    document.getElementById("exposureList").innerHTML = `
+        <li>Social Media Risk: ${data.social_score ?? 0}</li>
+        <li>Leak Risk: ${data.leak_score ?? 0}</li>
+        <li>Search Visibility: ${data.search_score ?? 0}</li>
+        <li>Security Score: ${data.security_score ?? 0}</li>
+    `;
+
+    // =========================
+    // 📊 CHART DATA
+    // =========================
+
+    const social = data.social_score ?? 0;
+    const leak = data.leak_score ?? 0;
+    const search = data.search_score ?? 0;
+    const security = data.security_score ?? 0;
+    const risk = data.risk_score ?? 0;
+
+    // =========================
+    // 📊 RISK DOUGHNUT CHART
+    // =========================
+
+    new Chart(document.getElementById("riskChart"), {
+        type: "doughnut",
+        data: {
+            labels: ["Safe", "Risk"],
+            datasets: [{
+                data: [100 - risk, risk],
+                backgroundColor: ["#22c55e", "#ef4444"]
+            }]
+        }
+    });
+
+    // =========================
+    // 📊 EXPOSURE BAR CHART
+    // =========================
+
+    new Chart(document.getElementById("exposureChart"), {
+        type: "bar",
+        data: {
+            labels: ["Social", "Leak", "Search", "Security"],
+            datasets: [{
+                label: "Score",
+                data: [social, leak, search, security],
+                backgroundColor: ["#3b82f6", "#ef4444", "#f59e0b", "#22c55e"]
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+}
+
+// back navigation
+function goDashboard() {
+    window.location.href = "dashboard.html";
+}
+
+</script>
+
+</body>
+
+</html>
